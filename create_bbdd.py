@@ -4,7 +4,7 @@ import sqlite3
 
 def db():
     #connect to DDBB
-    return sqlite3.connect("test_data.sqlite3")
+    return sqlite3.connect("bookings.db")
 
 
 def create_tables():
@@ -13,7 +13,9 @@ def create_tables():
     '''
    
     cursor = db().cursor()
-
+    
+    #creation of each of the tables in ddbb
+    
     #raw_users
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS raw_users (
@@ -132,6 +134,7 @@ def create_tables():
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS BOOKINGS (
             BOOKING_ID INTEGER PRIMARY KEY,
+            USER_ID INTEGER,
             HOTEL_ID INTEGER,
             ARRIVAL_DATE TEXT,
             DEPARTURE_DATE TEXT,
@@ -146,6 +149,7 @@ def create_tables():
             STATUS TEXT,
             LAST_UPDATED_AT TEXT,
             
+            FOREIGN KEY (USER_ID) REFERENCES USERS(USER_ID)
             FOREIGN KEY (HOTEL_ID) REFERENCES HOTELS(HOTEL_ID),
             FOREIGN KEY (MEAL_ID) REFERENCES MEAL_TYPES(MEAL_ID),
             FOREIGN KEY (COUNTRY_ID) REFERENCES COUNTRIES(COUNTRY_ID),
