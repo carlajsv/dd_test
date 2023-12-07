@@ -69,12 +69,12 @@ def create_tables():
             USER_NAME TEXT,
             USER_EMAIL TEXT,
             USER_ADDRESS TEXT,
-            USER_COUNTRY_ID INTEGER,
+            USER_COUNTRY_CODE TEXT,
             USER_PHONE TEXT,
             USER_WEBSITE TEXT,
             COMPANY_ID INTEGER,
             
-            FOREIGN KEY (USER_COUNTRY_ID) REFERENCES COUNTRIES(COUNTRY_ID),
+            FOREIGN KEY (USER_COUNTRY_CODE) REFERENCES COUNTRIES(COUNTRY_ID),
             FOREIGN KEY (COMPANY_ID) REFERENCES COMPANIES(COMPANY_ID)
         )
     ''')
@@ -124,7 +124,7 @@ def create_tables():
     #COUNTRIES
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS COUNTRIES (
-            COUNTRY_ID INTEGER PRIMARY KEY,
+            COUNTRY_ID TEXT PRIMARY KEY,
             COUNTRY TEXT
         )
     ''')

@@ -3,7 +3,20 @@ import requests
 from faker import Faker
 import re
 import phonenumbers
+import sqlite3
 
+
+
+
+
+
+
+
+
+
+######################################################################
+    
+    
 
 def get_save_data(url,name_csv,df=None,id_column=None):
     
@@ -23,7 +36,7 @@ def get_save_data(url,name_csv,df=None,id_column=None):
        csv with all data
     '''
     response = requests.get(url)
-    #Convert into json format
+    #convert into json format
     data = response.json()
     #conver to df format
     data_df = pd.DataFrame(data)
@@ -37,11 +50,8 @@ def get_save_data(url,name_csv,df=None,id_column=None):
     else:
         #save into .csv
         data_df.to_csv(name_csv, index=False)
-        return data_df      
+        return data_df  
     
-    
-
-
 def normalize_column(df, list_columns):
         
     '''
@@ -301,5 +311,7 @@ def add_bookings_code(quantity_users, booking_df):
     return booking_with_codes_df
 
 
+
+        
 
     
