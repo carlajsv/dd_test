@@ -2,6 +2,7 @@ import pandas as pd
 import requests
 from faker import Faker
 import re
+from datetime import datetime, timedelta
 
 
 
@@ -111,7 +112,7 @@ def capitalize_rename_columns(df, columns = None):
     
     return df
 
-
+#lowercase some colums in a dataframe
 def lowercase(df, df_column_list):
     
     '''
@@ -127,7 +128,56 @@ def lowercase(df, df_column_list):
 
 ###BOOKINGS TRANSFORMATIONS
 
-creat
+
+def create_arrival_date(df, column_day, column_month, column_year, date_format=None):
+    
+    '''
+    function to create the arrival_date column from the three columns day, month and year of arrival
+    input:
+    df = booking_df
+    column_day = column where the days are found 
+    column_month = column where the months are found
+    column_year = column where the years are found
+    date_format= The format in which the columns are, for example: '%Y-%m-%d' (optional) if the format is not passed, 
+    the following is set as default: '%Y-%B-%d'.
+    '''
+    if date_format:
+        df['arrival_date'] = pd.to_datetime(df[column_year].astype(str) + '-' +
+                                     df[column_month].astype(str) + '-' +
+                                     df[column_day].astype(str), format=date_format)
+
+    else:
+        df['arrival_date'] = pd.to_datetime(df[column_year].astype(str) + '-' +
+                                     df[column_month].astype(str) + '-' +
+                                     df[column_day].astype(str), format='%Y-%B-%d')
+        
+        
+        
+def get_departure_date(df):
+    
+    '''
+    Function to calculate the departure date column.
+
+    inputs:
+    df = booking dataframe
+    '''
+
+    #calculate the column 'departure_date' by adding 'stays_in_week_end_nights' and 'stays_in_week_nights'
+    df['departure_date'] = df['arrival_date'] + pd.to_timedelta(df['stays_in_weekend_nights'] + df['stays_in_week_nights'], unit='D')
+    
+    
+def reservation_date(df):
+    
+    '''
+    Function to calculate the reservation date column.
+
+    inputs:
+    df = bookings dataframe
+    '''
+
+    #calculate the reservation date column by removing lead time
+    df['reservation_date'] = df['arrival_date'] - pd.to_timedelta(df['lead_time'], unit='D')
+    
 
 
 

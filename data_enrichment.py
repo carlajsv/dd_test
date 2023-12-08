@@ -20,6 +20,7 @@ def random_users(quantity, users_df):
         df_users = users DataFrame
         quantity = number of users to be added 
     '''
+    #create faker object
     fake = Faker()
 
     #number of new users
@@ -95,8 +96,10 @@ def create_id(df, column_id, quantity=None):
     quantity(optional): number of ids to be added
     
     '''
+    #create faker object
+    fake = Faker()
     if quantity:
-        df[column_id] = [fake.random_int(min=1, max=quantity_users) for i in range(len(df))]
+        df[column_id] = [fake.random_int(min=1, max=quantity) for i in range(len(df))]
     else:
         df[column_id] = np.random.permutation(np.arange(1, len(df) + 1))
         
@@ -121,12 +124,10 @@ def only_some_records(percentage, df, column_id, column_to_modify):
     #indentify and replace ids with NaN
     df.loc[df[column_id].isin(id_to_modify), [column_id, column_to_modify]] = [np.nan, np.nan]
     
-def
-    
-    
     
         
-
+############################################## NO AGREGAR PAIS A LOS USUARIOS
+        
 #create country name in bookings    
 def get_country_name(country_code):
     '''
@@ -142,20 +143,30 @@ def get_country_name(country_code):
     except (LookupError, AttributeError):
         return np.nan
     
-def add_country(df_column):
+#get an unique country list from df
+def unique_country_list(df_column_w_codes):
     '''
-    Add country name column to df
+    function to obtain a list of unique countries by passing a df column that has the codes of the countries.
+    inputs:
+    df_column_w_codes = column with country codes, like df.country_code
     
-    input:
-    df_column = column where the code of the countries can be found
     '''
+    list_countries = list(df_column_w_codes.apply(lambda x: get_country_name(x)).unique())
+    return list_countries
+
+#add country column to a df
+def add_countries_to_df(df,df_column_w_codes):
+    '''
+    add to a df a column with country names obtained from a column of another df with country codes
+    inputs:
+    df = df to which is added the column
+    df_column_w_codes = df column with the codes of the countries
+    '''
+    country_list = unique_country_list(df_column_w_codes)
     
-    if df_column:
-        df['country_name'] = df_column.apply(get_country_name)
-        
-    country_list
-        
-        
+    df['country'] = np.random.choice(country_list, len(df), replace=True)
+    
+############################################        
         
 #create booking id        
 def create_booking_id(booking_df):
@@ -184,9 +195,10 @@ def create_booking_id(booking_df):
     df['BOOKING_CODE'] = list(booking_codes)
     
     #union of two df
-    booking_with_codes_df = pd.concat([df,booking_df], axis=1)
-
-    return booking_with_codes_df
+    booking_with_codes = pd.concat([df,booking_df], axis=1)
+    
+    return booking_with_codes
+    
 
 
 

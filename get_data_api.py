@@ -63,7 +63,7 @@ def get_api_data(url):
     return api_df
     
     
-def add_data(url, old_table = None, ID_old_table = None):
+def get_all_data(url, old_table = None, ID_old_table = None):
     '''
     adds the new data, if any, to the existing table and generates a df with the completed data
     '''
