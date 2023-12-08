@@ -18,7 +18,7 @@ def create_dim_users_table(df_users):
     return dim_users
 
 
-def create_dim_companies_table(df_users, column_name):
+def create_dim_companies_table(df_users):
     '''
     function to create a dim_companies table
     
