@@ -42,7 +42,7 @@ def create_table(conn, create_table_sql):
 def main():
     
     #assign name and path of the bbdd
-    database = r"./bookings.db"
+    database = r"./dd_test.db"
 
     sql_create_raw_users = """CREATE TABLE IF NOT EXISTS raw_users (
                                     id INTEGER PRIMARY KEY,
@@ -58,12 +58,12 @@ def main():
                                 );"""
 
     sql_create_raw_bookings = """CREATE TABLE IF NOT EXISTS raw_bookings (
-                                booking_code INTEGER PRIMARY KEY,
+                                booking_code TEXT PRIMARY KEY,
                                 Hotel TEXT,
                                 Is_canceled INTEGER,
                                 lead_time INTEGER,
                                 arrival_date_year INTEGER,
-                                arrival_date_month INTEGER,
+                                arrival_date_month TEXT,
                                 arrival_date_day_of_month INTEGER,
                                 stays_in_weekend_nights INTEGER,
                                 stays_in_week_nights INTEGER,
@@ -76,7 +76,7 @@ def main():
                                 previous_bookings_not_canceled INTEGER,
                                 reserved_room_type TEXT,
                                 assigned_room_type TEXT,
-                                agent INTEGER,
+                                agent NUMERIC,
                                 reservation_status TEXT,
                                 reservation_status_date TEXT,
                                 user_id INTEGER,
@@ -101,37 +101,37 @@ def main():
                                     FOREIGN KEY (USER_ID) REFERENCES USERS(USER_ID)
                                 );"""
     
-    sql_create_dim_hotels = """CREATE TABLE IF NOT EXISTS HOTELS (
-                                    HOTEL_ID INTEGER PRIMARY KEY,
+    sql_create_dim_hotels = """CREATE TABLE IF NOT EXISTS DIM_HOTELS (
+                                    HOTEL_ID TEXT PRIMARY KEY,
                                     HOTEL_NAME TEXT
                                 );"""
     
-    sql_create_dim_agents = """CREATE TABLE IF NOT EXISTS AGENTS (
+    sql_create_dim_agents = """CREATE TABLE IF NOT EXISTS DIM_AGENTS (
                                     AGENT_ID INTEGER PRIMARY KEY,
                                     AGENT_NAME TEXT
                                 );"""
     
-    sql_create_dim_meals = """CREATE TABLE IF NOT EXISTS MEAL_TYPES (
-                                MEAL_ID INTEGER PRIMARY KEY,
+    sql_create_dim_meals = """CREATE TABLE IF NOT EXISTS DIM_MEALS (
+                                MEAL_ID TEXT PRIMARY KEY,
                                 MEAL_NAME TEXT
                                 );"""
     
-    sql_create_dim_countries = """CREATE TABLE IF NOT EXISTS COUNTRIES (
+    sql_create_dim_countries = """CREATE TABLE IF NOT EXISTS DIM_COUNTRIES (
                                     COUNTRY_ID TEXT PRIMARY KEY,
-                                    COUNTRY TEXT
+                                    COUNTRY_NAME TEXT
                                 );"""
     
     sql_create_bookings = """CREATE TABLE IF NOT EXISTS BOOKINGS (
-                                BOOKING_CODE INTEGER PRIMARY KEY,
+                                BOOKING_CODE TEXT PRIMARY KEY,
                                 USER_ID INTEGER,
-                                COUNTRY_ID INTEGER,
+                                COUNTRY_ID TEXT,
                                 AGENT_ID INTEGER,
-                                HOTEL_ID INTEGER,
+                                HOTEL_ID TEXT,
                                 ADULTS INTEGER,
                                 CHILDREN INTEGER,
-                                MEAL_ID INTEGER,
-                                RESERVED_ROOM_TYPE_ID INTEGER,
-                                ASSIGNED_ROOM_TYPE_ID INTEGER,
+                                MEAL_ID TEXT,
+                                RESERVED_ROOM_TYPE_ID TEXT,
+                                ASSIGNED_ROOM_TYPE_ID TEXT,
                                 STATUS TEXT,
                                 LAST_UPDATED_AT TEXT,
                                 ARRIVAL_DATE TEXT,
@@ -187,5 +187,11 @@ def insert_table_sql(table, name_sql_table, db_file):
     Creates table in sqldb from Pandas DataFrame
     '''
     conn = create_connection(db_file)
-    table = table.fillna('')
+    table = table.fillna('NULL')
     table.to_sql(name_sql_table, conn, if_exists='append', index = False)
+
+        
+    
+    
+    
+    
