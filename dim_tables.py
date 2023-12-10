@@ -12,9 +12,10 @@ def create_dim_users_table(df_users):
     inputs:
     df_users = df with users raw data and extended. 
     '''
-    #Split the users from the first column to the company column.
-    dim_users = df_users.loc[:,:'website']
-    
+    #Split the users from the first column to the company column and create a list with the columns names
+    users_columns = df_users.loc[:,:'website'].columns.to_list()
+    #make a copy of the df_users in order not to modify the original one
+    dim_users = df_users[users_columns + ['company_id']].copy()
     return dim_users
 
 
@@ -25,8 +26,12 @@ def create_dim_companies_table(df_users):
     inputs:
     df_users = df with users raw data and extended. 
     '''
-    #split users_df from the company column onward
-    dim_companies = df_users.iloc[:,df_users.columns.get_loc('company'):]
+    #split users_df from the company column onward and create a list with the columns names
+    companies_columns = df_users.iloc[:,df_users.columns.get_loc('company'):].columns.to_list()
+    #make a copy of the df_users in order not to modify the original one
+    dim_companies = df_users[companies_columns + ['id']].copy()
+    #rename the id column to user id
+    dim_companies.rename(columns={'id': 'user_id'}, inplace=True)
     
     return dim_companies
 

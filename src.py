@@ -311,7 +311,71 @@ def add_bookings_code(quantity_users, booking_df):
     return booking_with_codes_df
 
 
+def cast_column_to_dtype(df, column_name, new_dtype):
+    '''
+        function to cast an entire column of a DataFrame to a new data type
 
-        
+        Inputs:
+        - df = DataFrame in which the data type conversion will be performed
+        - column_name = Name of the column to be casted (str)
+        - new_dtype = New data type to which the column will be casted
+
+        Returns:
+        - DataFrame = DataFrame with the column casted to the new data type
+    '''
+
+    try:
+        #attempt to cast the entire column to the new data type
+        df[column_name] = df[column_name].astype(new_dtype)
+        print(f"Column '{column_name}' successfully casted to {new_dtype}.")
+    except ValueError as e:
+        #handle the case where there are NaN values in the column
+        if np.issubdtype(new_dtype, np.number) and df[column_name].notna().any():
+            
+  
+            df[column_name].fillna(0, inplace=True)
+    
+            df[column_name] = df[column_name].astype(new_dtype)
+            df_copy[column_name].replace(0, np.nan, inplace=True)
+
+            print(f"Non-NaN values in column '{column_name}' successfully casted to {new_dtype}.")
+        else:
+            print(f"Error: Unable to cast column '{column_name}' to {new_dtype}. Details: {e}")
+
+    return df
+
+
+import pandas as pd
+import numpy as np
+
+
+
+
+
+def convert_nan_to_zero_and_zero_to_nan(df, column_name):
+    """
+    Function to convert NaN values to zero and zero values to NaN in a specific column.
+
+    Parameters:
+    - df: DataFrame
+        The DataFrame in which the conversion will be performed.
+    - column_name: str
+        Name of the column to be processed.
+
+    Returns:
+    - DataFrame
+        DataFrame with NaN values converted to zero and zero values converted to NaN.
+    """
+    # Copy the DataFrame to avoid unwanted changes to the original
+    df_copy = df.copy()
+
+    # Convert NaN to zero
+    df_copy[column_name].fillna(0, inplace=True)
+
+    # Convert zero to NaN
+    df_copy[column_name].replace(0, np.nan, inplace=True)
+
+    return df_copy
+
 
     

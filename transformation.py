@@ -3,15 +3,16 @@ import requests
 from faker import Faker
 import re
 from datetime import datetime, timedelta
+import numpy as np
 
 
 
 def divide_df(df_users, column_name):
     '''
     Divide df_users in two, USERS and COMPANIES
-    inputs:
-    df_users = df to divide
-    column_name = the column from which the df is to be divided
+    Inputs:
+    - df_users = df to divide
+    - column_name = the column from which the df is to be divided
     '''
     
     
@@ -21,26 +22,27 @@ def divide_df(df_users, column_name):
     return USERS, COMPANIES
 
 
-
-#Normalize company column from companies_df                                                                
+#normalize company column from companies_df
 def normalize_column(df, list_columns):
-        
     '''
-        Function to normalize several columns of a dataFrame where the parameters to be passed are:
-        df = pandas DataFrame
-        list_columns = a list from strings referals to columns of df above
+        Function to normalize several columns of a dataFrame
+        Inputs:
+        - df = pandas DataFrame
+        - list_columns = list from strings referals to columns of df above
     '''
-    for i in list_columns:
-        
-        #normalize column
-        df_column = pd.json_normalize(df[i])
-        #union dfs
-        df_concat = pd.concat([df, df_column], axis=0)
-        #delete column from original df
-        df_complete = df_concat.drop(i, axis=1)
-        df=df_complete
     
+    
+    for col in list_columns:
+        #normalize column
+        df_column = pd.json_normalize(df[col])
+        #concatenate dataframes
+        df = pd.concat([df, df_column], axis=1)
+        #drop original column
+        df = df.drop(col, axis=1)
+
     return df
+
+
 
 
 #Rename and capitalize names of columns from df
@@ -49,8 +51,8 @@ def capitalize_rename_columns(df, columns = None):
     '''
         Function to capitalize and rename (optional) all columns in a Pandas DataFrame.
         Input: 
-        df = pandas DataFrame
-        columns = list of columns to rename
+        - df = pandas DataFrame
+        - columns = list of columns to rename
         
     '''
     #assign the columns of the data frame if no list is entered
@@ -106,7 +108,30 @@ def drop_nan_rows(df):
     - DataFrame with NaN rows removed
     '''
     df_cleaned = df.dropna(axis=0, how='any')
-    return df_cleaned
+    
+    #reset index before deleting rows
+    df_reset = df_cleaned.reset_index(drop=True)
+    return df_reset
+
+
+
+def cast_column_to_dtype(df, column_name, new_dtype):
+    '''
+        function to cast an entire column of a DataFrame to a new data type
+
+        Inputs:
+        - df = df to be casted
+        - column_name = name of the column to be casted (str)
+        - new_dtype = new data type to which the column will be casted
+
+        Returns:
+        - DataFrame = DataFrame with the column casted to the new data type
+    '''
+
+    #cast the entire column to the new data type
+    df[column_name] = df[column_name].astype(new_dtype)
+
+    return df
 
 
 
@@ -157,7 +182,7 @@ def reservation_date(df):
     '''
     Function to calculate the reservation date column.
 
-    inputs:
+    Inputs:
     df = bookings dataframe
     '''
 
@@ -165,7 +190,30 @@ def reservation_date(df):
     df['reservation_date'] = df['arrival_date'] - pd.to_timedelta(df['lead_time'], unit='D')
     
 
+    
+def map_dimension_table(df, dim_table, mapping_column, id_column, name_column):
+    '''
+        Map values in a DataFrame column using a dimension table.
 
+        Inputs:
+        - df = The DataFrame containing the column to be mapped
+        - dim_table = Dimension table with mappings between IDs and names (df)
+        - mapping_column = name of the column in the DataFrame to be mapped (str)
+        - id_column = name of the ID column in the dimension table (str)
+        - name_column = name of the 'names column' in the dimension table (str)
+
+        Returns:
+        - df = new DataFrame with the specified column mapped to IDs.
+    '''
+    #create a mapping dictionary from the dimension table
+    mapping_dict = dict(zip(dim_table[name_column], dim_table[id_column]))
+
+    #map the values in the specified column using the mapping dictionary
+    df[mapping_column] = df[mapping_column].map(mapping_dict)
+
+    return df
+    
+    
     
     
 

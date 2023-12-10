@@ -192,7 +192,7 @@ def create_booking_id(booking_df):
         booking_codes.add(booking_code)
     
     #create booking_code column
-    df['BOOKING_CODE'] = list(booking_codes)
+    df['booking_code'] = list(booking_codes)
     
     #union of two df
     booking_with_codes = pd.concat([df,booking_df], axis=1)
