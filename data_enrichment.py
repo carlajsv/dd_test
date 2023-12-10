@@ -126,7 +126,7 @@ def only_some_records(percentage, df, column_id, column_to_modify):
     
     
         
-############################################## NO AGREGAR PAIS A LOS USUARIOS
+############################################## DO NOT USE YET
         
 #create country name in bookings    
 def get_country_name(country_code):
